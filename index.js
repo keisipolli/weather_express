@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const fetch =require('node-fetch')
+const fetch = require('node-fetch')
 
 const path = require('path')
 
@@ -12,21 +12,25 @@ let city = 'Tartu'
 
 
 app.get('/', function (req, res){
+
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`)
-        .then((response) => {
-            return response.json()
+        .then((responce) => {
+            return responce.json()
         })
-        .then((data)=> {
+        .then((data) => {
             let description = data.weather[0].description
             let city = data.name
             let temp = Math.round(parseFloat(data.main.temp)-273.15)
+
             res.render('index', {
                 description: description,
                 city: city,
-                temp: temp
+                temp: temp,
             })
-
         })
-
+})
+app.post ('/', function (req,res) {
+    console.log('req.body')
+    res.redirect('/')
 })
     app.listen(3000)
