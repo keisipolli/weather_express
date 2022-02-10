@@ -1,13 +1,32 @@
 const express = require('express')
 const app = express()
+const fetch =require('node-fetch')
 
 const path = require('path')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
-app.get('/', function (req, res){
-    res.render('index')
-})
+const key = "4c9f7b8ced99c03a5db8192a1fa6a1ac\n"
+let city = 'Tartu'
 
-app.listen(3000)
+
+app.get('/', function (req, res){
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`)
+        .then((response) => {
+            return response.json()
+        })
+        .then((data)=> {
+            let description = data.weather[0].description
+            let city = data.name
+            let temp = Math.round(parseFloat(data.main.temp)-273.15)
+            res.render('index', {
+                description: description,
+                city: city,
+                temp: temp
+            })
+
+        })
+
+})
+    app.listen(3000)
